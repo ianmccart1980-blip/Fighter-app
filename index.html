@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fighter</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-lion.jpg">
+  <link rel="icon" href="icon-lion.jpg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1f1f1f;
+      --text: #f5f5f5;
+      --muted: #a3a3a3;
+      --accent: #d4af37;
+      --accent-soft: #3d2e0a;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    header {
+      padding: 16px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid #2a2e36;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 { font-size: 20px; font-weight: 600; }
+    .status { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .status.green { color: var(--green); }
+    .status.yellow { color: var(--yellow); }
+    .status.red { color: var(--red); }
+    main { padding: 16px; max-width: 480px; margin: 0 auto; }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #2a2e36;
+    }
+    .card h2 { font-size: 18px; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 15px; }
+    .big-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+    .big-btn:active { transform: scale(0.98); }
+    .big-btn.secondary { background: var(--surface2); color: var(--text); }
+    .set-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #2a2e36;
+    }
+    .set-row:last-child { border: none; }
+    .timer {
+      font-size: 48px;
+      font-weight: 700;
+      text-align: center;
+      margin: 20px 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      display: flex;
+      border-top: 1px solid #2a2e36;
+      padding: 8px 0;
+      z-index: 20;
+    }
+    .nav button {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 8px;
+      cursor: pointer;
+    }
+    .nav button.active { color: var(--accent); font-weight: 600; }
+    .progress-item { margin-bottom: 16px; }
+    .progress-item .label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
+    .bar { height: 8px; background: #2a2e36; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--accent); }
+    input, select {
+      width: 100%;
+      padding: 14px;
+      background: var(--surface2);
+      border: 1px solid #3a3f4a;
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 16px;
+      margin-top: 8px;
+    }
+    .hidden { display: none; }
+    .tag { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .tag.green { background: #064e3b; color: #6ee7b7; }
+    .tag.yellow { background: #78350f; color: #fcd34d; }
+    .tag.red { background: #7f1d1d; color: #fca5a5; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fighter</h1>
+    <div class="status" id="readinessStatus">Ready</div>
+  </header>
+
+  <main>
+    <!-- TODAY / NOW -->
+    <section id="todayView">
+      <div class="card" id="nowCard">
+        <h2 id="nowTitle">Loading today's session…</h2>
+        <p id="nowDesc">Preparing your plan.</p>
+        <button class="big-btn" id="startSessionBtn">Start Session</button>
+      </div>
+
+      <div class="card hidden" id="sessionCard">
+        <h2 id="exerciseName">Exercise</h2>
+        <p id="exerciseDetail">Sets × Reps · Target</p>
+        <div class="timer" id="timerDisplay">00:00</div>
+        <div id="setsList"></div>
+        <button class="big-btn" id="completeSetBtn">Complete Set</button>
+        <button class="big-btn secondary" id="skipRestBtn">Skip Rest</button>
+      </div>
+
+      <div class="card">
+        <h2>Today's Plan</h2>
+        <div id="dayTimeline"></div>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section id="progressView" class="hidden">
+      <div class="card">
+        <h2>Readiness</h2>
+        <div class="progress-item">
+          <div class="label"><span>Current</span><span id="readinessLabel">—</span></div>
+        </div>
+        <button class="big-btn secondary" id="logReadinessBtn">Log Morning Check</button>
+      </div>
+      <div class="card">
+        <h2>Key Metrics</h2>
+        <div class="progress-item">
+          <div class="label"><span>Working Maxes</span><span id="maxesSummary">Not set</span></div>
+        </div>
+        <div class="progress-item">
+          <div class="label"><span>Latest Fade</span><span id="fadeScore">—</span></div>
+          <div class="bar"><div class="bar-fill" id="fadeBar" style="width:0%"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="label"><span>20-min Test</span><span id="aerobicScore">—</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Recent Sessions</h2>
+        <div id="recentLogs">No sessions logged yet.</div>
+      </div>
+    </section>
+
+    <!-- SETTINGS / IMPORT -->
+    <section id="settingsView" class="hidden">
+      <div class="card">
+        <h2>Import Existing Data</h2>
+        <p>Upload the JSON backup from your current Optimal 8 app to restore maxes, logs, and history.</p>
+        <input type="file" id="importFile" accept=".json">
+        <button class="big-btn" id="importBtn">Import Backup</button>
+        <p id="importStatus" style="margin-top:12px; color:var(--muted);"></p>
+      </div>
+      <div class="card">
+        <h2>Program</h2>
+        <select id="programSelect">
+          <option value="strength">Strength / Power / Physique</option>
+          <option value="prep">Prep</option>
+          <option value="camp">Camp</option>
+        </select>
+        <button class="big-btn secondary" id="saveProgramBtn" style="margin-top:12px;">Set Active Program</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav">
+    <button class="active" data-view="todayView">Today</button>
+    <button data-view="progressView">Progress</button>
+    <button data-view="settingsView">Settings</button>
+  </nav>
+
+  <script>
+    // Simple local storage wrapper
+    const store = {
+      get: (k, d = null) => {
+        try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; }
+      },
+      set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+    };
+
+    let state = store.get('optimal8-state', {
+      program: 'strength',
+      readiness: 'green',
+      maxes: {},
+      logs: [],
+      fade: null,
+      aerobic: null
+    });
+
+    function saveState() { store.set('optimal8-state', state); }
+
+    // Navigation
+    document.querySelectorAll('.nav button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(btn.dataset.view).classList.remove('hidden');
+      });
+    });
+
+    // Sample session data (placeholder — will be expanded with full program logic)
+    const sampleSessions = {
+      strength: {
+        title: "Lower Strength",
+        exercises: [
+          { name: "Trap Bar Deadlift", detail: "4 × 5 · Velocity-based", sets: 4, rest: 180 },
+          { name: "Bulgarian Split Squat", detail: "3 × 8 / side", sets: 3, rest: 90 },
+          { name: "Nordic Curl", detail: "3 × 5", sets: 3, rest: 90 }
+        ]
+      },
+      prep: {
+        title: "Power + Engine",
+        exercises: [
+          { name: "Contrast Squat", detail: "5 × (2 + 4 jumps)", sets: 5, rest: 150 },
+          { name: "Med Ball Throw", detail: "4 × 5", sets: 4, rest: 90 },
+          { name: "4-min Intervals", detail: "4 × 4 min · Erg", sets: 4, rest: 120 }
+        ]
+      },
+      camp: {
+        title: "Strength + Power",
+        exercises: [
+          { name: "Paused Squat", detail: "5 × 3 · Heavy", sets: 5, rest: 180 },
+          { name: "Bench Throw", detail: "4 × 4", sets: 4, rest: 120 },
+          { name: "Rounds Simulation", detail: "6 × 3 min", sets: 6, rest: 60 }
+        ]
+      }
+    };
+
+    let currentSession = null;
+    let currentExIndex = 0;
+    let currentSet = 0;
+    let timerInterval = null;
+    let restSeconds = 0;
+
+    function loadToday() {
+      const sess = sampleSessions[state.program] || sampleSessions.strength;
+      document.getElementById('nowTitle').textContent = sess.title;
+      document.getElementById('nowDesc').textContent = `${sess.exercises.length} main pieces · Readiness: ${state.readiness}`;
+      document.getElementById('readinessStatus').textContent = `Readiness: ${state.readiness.toUpperCase()}`;
+      document.getElementById('readinessStatus').className = `status ${state.readiness}`;
+      document.getElementById('nowCard').classList.remove('hidden');
+      document.getElementById('sessionCard').classList.add('hidden');
+    }
+
+    document.getElementById('startSessionBtn').addEventListener('click', () => {
+      currentSession = sampleSessions[state.program] || sampleSessions.strength;
+      currentExIndex = 0;
+      currentSet = 0;
+      document.getElementById('nowCard').classList.add('hidden');
+      document.getElementById('sessionCard').classList.remove('hidden');
+      renderExercise();
+    });
+
+    function renderExercise() {
+      const ex = currentSession.exercises[currentExIndex];
+      if (!ex) {
+        finishSession();
+        return;
+      }
+      document.getElementById('exerciseName').textContent = ex.name;
+      document.getElementById('exerciseDetail').textContent = ex.detail;
+      document.getElementById('setsList').innerHTML = '';
+      for (let i = 0; i < ex.sets; i++) {
+        const div = document.createElement('div');
+        div.className = 'set-row';
+        div.innerHTML = `<span>Set ${i+1}</span><span>${i < currentSet ? '✓' : ''}</span>`;
+        document.getElementById('setsList').appendChild(div);
+      }
+      document.getElementById('timerDisplay').textContent = '00:00';
+    }
+
+    document.getElementById('completeSetBtn').addEventListener('click', () => {
+      const ex = currentSession.exercises[currentExIndex];
+      currentSet++;
+      if (currentSet >= ex.sets) {
+        currentExIndex++;
+        currentSet = 0;
+        startRest(ex.rest);
+      } else {
+        startRest(ex.rest);
+      }
+      renderExercise();
+    });
+
+    function startRest(seconds) {
+      restSeconds = seconds;
+      clearInterval(timerInterval);
+      updateTimer();
+      timerInterval = setInterval(() => {
+        restSeconds--;
+        updateTimer();
+        if (restSeconds <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('timerDisplay').textContent = 'Go';
+        }
+      }, 1000);
+    }
+
+    function updateTimer() {
+      const m = Math.floor(restSeconds / 60).toString().padStart(2, '0');
+      const s = (restSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    }
+
+    document.getElementById('skipRestBtn').addEventListener('click', () => {
+      clearInterval(timerInterval);
+      document.getElementById('timerDisplay').textContent = 'Go';
+    });
+
+    function finishSession() {
+      state.logs.unshift({
+        date: new Date().toISOString().slice(0, 10),
+        program: state.program,
+        title: currentSession.title
+      });
+      if (state.logs.length > 20) state.logs.pop();
+      saveState();
+      alert('Session complete. Logged.');
+      loadToday();
+    }
+
+    // Import
+    document.getElementById('importBtn').addEventListener('click', () => {
+      const file = document.getElementById('importFile').files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          // Merge key fields from typical Optimal 8 backup structure
+          if (data.maxes) state.maxes = data.maxes;
+          if (data.logs) state.logs = data.logs;
+          if (data.fade) state.fade = data.fade;
+          if (data.aerobic) state.aerobic = data.aerobic;
+          saveState();
+          document.getElementById('importStatus').textContent = 'Import successful. Data restored.';
+          updateProgress();
+        } catch {
+          document.getElementById('importStatus').textContent = 'Could not read backup. Check the file.';
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('saveProgramBtn').addEventListener('click', () => {
+      state.program = document.getElementById('programSelect').value;
+      saveState();
+      loadToday();
+      alert('Program set.');
+    });
+
+    function updateProgress() {
+      document.getElementById('readinessLabel').textContent = state.readiness.toUpperCase();
+      document.getElementById('maxesSummary').textContent = Object.keys(state.maxes).length
+        ? Object.entries(state.maxes).map(([k,v]) => `${k}: ${v}`).join(', ')
+        : 'Not set';
+      document.getElementById('fadeScore').textContent = state.fade ?? '—';
+      document.getElementById('fadeBar').style.width = state.fade ? `${Math.min(100, state.fade)}%` : '0%';
+      document.getElementById('aerobicScore').textContent = state.aerobic ?? '—';
+      document.getElementById('recentLogs').innerHTML = state.logs.slice(0, 5).map(l =>
+        `<div style="padding:8px 0; border-bottom:1px solid #2a2e36;">${l.date} · ${l.title || l.program}</div>`
+      ).join('') || 'No sessions logged yet.';
+    }
+
+    // Init
+    loadToday();
+    updateProgress();
+    document.getElementById('programSelect').value = state.program;
+  </script>
+</body>
+</html>
