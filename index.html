@@ -143,7 +143,9 @@
       get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
       set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
     };
-    let st = S.get('fighter2') || { program:'strength', week:1, day:0, logs:[], maxes:{}, fade:null };
+    let st = S.get('fighter2') || { program:'strength', week:1, logs:[], maxes:{}, fade:null };
+    // Always open on the real current day
+    st.day = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
 
     const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     const PROGS = {
