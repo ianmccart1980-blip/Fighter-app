@@ -5,22 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Fighter</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-lion.jpg">
-  <link rel="icon" href="icon-lion.jpg">
+  <link rel="apple-touch-icon" href="icon-minotaur.jpg">
+  <link rel="icon" href="icon-minotaur.jpg">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#e0f2fe">
   <style>
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --surface2: #1f1f1f;
-      --text: #f5f5f5;
-      --muted: #a3a3a3;
-      --accent: #d4af37;
-      --accent-soft: #3d2e0a;
-      --green: #10b981;
-      --yellow: #f59e0b;
-      --red: #ef4444;
+      --bg: #f0f9ff;
+      --surface: #ffffff;
+      --surface2: #e0f2fe;
+      --text: #0c4a6e;
+      --muted: #64748b;
+      --accent: #0284c7;
+      --accent-light: #7dd3fc;
+      --green: #059669;
       --radius: 16px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -28,180 +26,108 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
-      min-height: 100vh;
       padding-bottom: 90px;
     }
     header {
-      padding: 16px 20px 12px;
+      padding: 20px 20px 16px;
       background: var(--surface);
-      border-bottom: 1px solid #2a2a2a;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      border-bottom: 1px solid #bae6fd;
+      position: sticky; top: 0; z-index: 10;
     }
-    header h1 { font-size: 22px; font-weight: 700; color: var(--accent); }
-    .status { font-size: 14px; margin-top: 4px; font-weight: 500; }
-    .status.green { color: var(--green); }
-    .status.yellow { color: var(--yellow); }
-    .status.red { color: var(--red); }
+    header h1 { font-size: 24px; font-weight: 800; color: var(--accent); }
+    .sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
     main { padding: 16px; max-width: 480px; margin: 0 auto; }
     .card {
       background: var(--surface);
       border-radius: var(--radius);
       padding: 20px;
       margin-bottom: 16px;
-      border: 1px solid #2a2a2a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
-    .card h2 { font-size: 18px; margin-bottom: 6px; }
-    .card p, .muted { color: var(--muted); font-size: 15px; }
+    .card h2 { font-size: 18px; margin-bottom: 10px; color: var(--text); }
+    .muted { color: var(--muted); font-size: 14px; }
     .big-btn {
-      width: 100%;
-      padding: 18px;
-      background: var(--accent);
-      color: #000;
-      border: none;
-      border-radius: 12px;
-      font-size: 17px;
-      font-weight: 700;
-      margin-top: 14px;
-      cursor: pointer;
+      width: 100%; padding: 16px; background: var(--accent); color: white;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 700; margin-top: 12px;
     }
-    .big-btn:active { transform: scale(0.98); }
-    .big-btn.secondary { background: var(--surface2); color: var(--text); }
-    .set-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid #2a2a2a;
-      font-size: 16px;
+    .big-btn.secondary { background: var(--surface2); color: var(--accent); }
+    .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 14px 0; }
+    .day-btn {
+      background: var(--surface2); border: none; color: var(--text);
+      padding: 12px 4px; border-radius: 10px; font-size: 13px; font-weight: 600;
     }
-    .set-row:last-child { border: none; }
-    .timer {
-      font-size: 56px;
-      font-weight: 800;
-      text-align: center;
-      margin: 16px 0;
-      font-variant-numeric: tabular-nums;
-      color: var(--accent);
-    }
+    .day-btn.active { background: var(--accent); color: white; }
     .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--surface);
-      display: flex;
-      border-top: 1px solid #2a2a2a;
-      padding: 6px 0 10px;
-      z-index: 20;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface); display: flex;
+      border-top: 1px solid #bae6fd; padding: 8px 0 14px; z-index: 20;
     }
-    .nav button {
-      flex: 1;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 10px 4px;
-      cursor: pointer;
-    }
+    .nav button { flex: 1; background: none; border: none; color: var(--muted); font-size: 13px; font-weight: 600; padding: 10px; }
     .nav button.active { color: var(--accent); }
-    .progress-item { margin-bottom: 18px; }
-    .progress-item .label { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px; }
-    .bar { height: 10px; background: #2a2a2a; border-radius: 5px; overflow: hidden; }
-    .bar-fill { height: 100%; background: var(--accent); }
-    input, select, textarea {
-      width: 100%;
-      padding: 14px;
-      background: var(--surface2);
-      border: 1px solid #3a3a3a;
-      border-radius: 10px;
-      color: var(--text);
-      font-size: 16px;
-      margin-top: 8px;
-    }
     .hidden { display: none !important; }
-    .tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-    .tag.green { background: #064e3b; color: #6ee7b7; }
-    .tag.yellow { background: #78350f; color: #fcd34d; }
-    .tag.red { background: #7f1d1d; color: #fca5a5; }
-    .day-item { padding: 12px 0; border-bottom: 1px solid #2a2a2a; }
-    .day-item:last-child { border: none; }
+    .timer { font-size: 56px; font-weight: 800; text-align: center; margin: 16px 0; color: var(--accent); }
+    .set-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #e0f2fe; }
+    select, input { width: 100%; padding: 14px; background: var(--surface2); border: 1px solid #bae6fd; border-radius: 10px; color: var(--text); font-size: 16px; margin-top: 8px; }
   </style>
 </head>
 <body>
   <header>
     <h1>Fighter</h1>
-    <div class="status green" id="readinessStatus">Readiness: GREEN</div>
+    <div class="sub" id="headerSub">Strength · Week 1 · Monday</div>
   </header>
 
   <main>
-    <!-- TODAY -->
     <section id="todayView">
-      <div class="card" id="nowCard">
-        <h2 id="nowTitle">Today's Session</h2>
-        <p id="nowDesc">Tap Start to begin guided training.</p>
-        <button class="big-btn" id="startSessionBtn">Start Session</button>
-      </div>
-
-      <div class="card hidden" id="sessionCard">
-        <h2 id="exerciseName">Exercise</h2>
-        <p id="exerciseDetail">Sets × Reps</p>
-        <div class="timer" id="timerDisplay">Ready</div>
-        <div id="setsList"></div>
-        <button class="big-btn" id="completeSetBtn">Complete Set</button>
-        <button class="big-btn secondary" id="finishEarlyBtn">Finish Session</button>
-      </div>
-
       <div class="card">
-        <h2>Today's Plan</h2>
-        <div id="dayTimeline"></div>
+        <h2>Week View</h2>
+        <div class="week-grid" id="weekGrid"></div>
+      </div>
+      <div class="card" id="sessionPreview">
+        <h2 id="sessTitle">Lower Strength</h2>
+        <p class="muted" id="sessDesc">Main lifts + accessories</p>
+        <button class="big-btn" id="startBtn">Start Session</button>
+      </div>
+      <div class="card hidden" id="activeSession">
+        <h2 id="exTitle">Exercise</h2>
+        <p class="muted" id="exDesc"></p>
+        <div class="timer" id="timerDisp">Ready</div>
+        <div id="setList"></div>
+        <button class="big-btn" id="completeBtn">Complete Set</button>
+        <button class="big-btn secondary" id="finishBtn">Finish & Log</button>
       </div>
     </section>
 
-    <!-- PROGRESS -->
     <section id="progressView" class="hidden">
       <div class="card">
-        <h2>Readiness</h2>
-        <p id="readinessLabel">GREEN — full plan</p>
-        <button class="big-btn secondary" id="cycleReadinessBtn">Cycle Readiness (test)</button>
+        <h2>Current Block</h2>
+        <p id="blockInfo">Strength / Power / Physique · Week 1</p>
+        <button class="big-btn secondary" id="advWeek">Next Week</button>
       </div>
       <div class="card">
-        <h2>Key Numbers</h2>
-        <div class="progress-item">
-          <div class="label"><span>Working Maxes</span></div>
-          <div id="maxesList" class="muted">None logged yet</div>
-        </div>
-        <div class="progress-item">
-          <div class="label"><span>Latest Fade</span><span id="fadeScore">—</span></div>
-          <div class="bar"><div class="bar-fill" id="fadeBar" style="width:0%"></div></div>
-        </div>
+        <h2>Tracked Numbers</h2>
+        <div id="stats">Fade: —<br>Maxes: none</div>
       </div>
       <div class="card">
-        <h2>Recent Sessions</h2>
-        <div id="recentLogs">No sessions yet.</div>
+        <h2>Session History</h2>
+        <div id="hist">No sessions logged</div>
       </div>
     </section>
 
-    <!-- SETTINGS -->
     <section id="settingsView" class="hidden">
       <div class="card">
-        <h2>Active Program</h2>
-        <select id="programSelect">
-          <option value="strength">Strength / Power / Physique (12 wk)</option>
-          <option value="prep">Prep (16 wk)</option>
-          <option value="camp">Camp (10 wk)</option>
+        <h2>Change Program</h2>
+        <select id="progSel">
+          <option value="strength">Strength / Power / Physique</option>
+          <option value="prep">Prep</option>
+          <option value="camp">Camp</option>
         </select>
-        <button class="big-btn" id="saveProgramBtn">Set Program</button>
+        <button class="big-btn" id="applyProg">Apply Program</button>
       </div>
       <div class="card">
-        <h2>Import Backup</h2>
-        <p class="muted">Select the JSON export from your previous Optimal 8 app.</p>
-        <input type="file" id="importFile" accept=".json,application/json">
-        <button class="big-btn" id="importBtn">Import</button>
-        <p id="importStatus" class="muted" style="margin-top:12px;"></p>
+        <h2>Import Previous Data</h2>
+        <input type="file" id="impFile" accept=".json">
+        <button class="big-btn" id="doImport">Import Backup</button>
+        <p class="muted" id="impMsg" style="margin-top:10px;"></p>
       </div>
     </section>
   </main>
@@ -213,203 +139,122 @@
   </nav>
 
   <script>
-    const store = {
-      get: (k, d = null) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
-      set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+    const S = {
+      get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+      set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+    };
+    let st = S.get('fighter2') || { program:'strength', week:1, day:0, logs:[], maxes:{}, fade:null };
+
+    const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const PROGS = {
+      strength: { name:'Strength / Power / Physique', sess:[
+        {t:'Lower Strength', d:'Trap bar 4×5, split squat, Nordic, carry'},
+        {t:'Upper Strength', d:'Bench, row, overhead, arms'},
+        {t:'Power Day', d:'Jumps, throws, contrast sets'},
+        {t:'Engine', d:'4×4 intervals + easy nasal'},
+        {t:'Full Body', d:'Complexes and core'},
+        {t:'Recovery', d:'RANGE + light movement'},
+        {t:'Rest', d:'Full rest or easy walk'}
+      ]},
+      prep: { name:'Prep', sess:[
+        {t:'Upper + Base', d:'Strength + aerobic base'},
+        {t:'Power + Engine', d:'Contrast + 4-min intervals'},
+        {t:'Lower Strength', d:'Paused work + accessories'},
+        {t:'Throws + Repeats', d:'Ballistic + 40s bursts'},
+        {t:'Long Session', d:'Higher volume strength'},
+        {t:'Rounds', d:'6×3 scored simulation'},
+        {t:'Recovery', d:'RANGE + mobility'}
+      ]},
+      camp: { name:'Camp', sess:[
+        {t:'Strength', d:'Paused / cluster work'},
+        {t:'Power + Engine', d:'Throws + intervals'},
+        {t:'Full Power', d:'Contrast + reactive jumps'},
+        {t:'Rounds', d:'6–8 × 3 min'},
+        {t:'Speed', d:'Microdoses + flying sprints'},
+        {t:'Maintenance', d:'Light strength'},
+        {t:'Recovery', d:'RANGE + easy'}
+      ]}
     };
 
-    let state = store.get('fighter-state', {
-      program: 'strength',
-      readiness: 'green',
-      maxes: {},
-      logs: [],
-      fade: null
-    });
+    function save() { S.set('fighter2', st); }
 
-    function save() { store.set('fighter-state', state); }
+    function draw() {
+      const p = PROGS[st.program];
+      document.getElementById('headerSub').textContent = `${p.name} · Week ${st.week} · ${DAYS[st.day]}`;
+      document.getElementById('blockInfo').textContent = `${p.name} · Week ${st.week}`;
 
-    // Full program sessions (representative of Optimal 8 structure)
-    const programs = {
-      strength: {
-        title: "Lower Strength",
-        desc: "Trap bar focus · velocity loading · 4–5 sets",
-        exercises: [
-          { name: "Trap Bar Deadlift", detail: "4 × 5 · stay in speed zone", sets: 4, rest: 180 },
-          { name: "Bulgarian Split Squat", detail: "3 × 8 / side", sets: 3, rest: 90 },
-          { name: "Nordic Curl", detail: "3 × 5 (slow)", sets: 3, rest: 90 },
-          { name: "Farmer Carry", detail: "3 × 40 m", sets: 3, rest: 60 }
-        ]
-      },
-      prep: {
-        title: "Power + Engine 1",
-        desc: "Contrast + 4-min intervals",
-        exercises: [
-          { name: "Contrast Squat", detail: "5 × (2 heavy + 4 jumps)", sets: 5, rest: 150 },
-          { name: "Med Ball Rotational Throw", detail: "4 × 5 / side", sets: 4, rest: 90 },
-          { name: "4-min Intervals (Erg)", detail: "4 × 4 min hard / 2 min easy", sets: 4, rest: 120 },
-          { name: "Neck Protocol", detail: "3 directions × 10", sets: 3, rest: 45 }
-        ]
-      },
-      camp: {
-        title: "Strength + Power",
-        desc: "Paused work + throws + rounds",
-        exercises: [
-          { name: "Paused Squat", detail: "5 × 3 · 2-sec pause", sets: 5, rest: 180 },
-          { name: "Bench Throw (Peak Power)", detail: "4 × 4", sets: 4, rest: 120 },
-          { name: "Landmine Punch", detail: "3 × 6 / side", sets: 3, rest: 90 },
-          { name: "6-Round Simulation", detail: "6 × 3 min · score fade", sets: 6, rest: 60 }
-        ]
-      }
-    };
+      const g = document.getElementById('weekGrid');
+      g.innerHTML = DAYS.map((d,i) => `<button class="day-btn ${i===st.day?'active':''}" data-i="${i}">${d}</button>`).join('');
+      g.querySelectorAll('.day-btn').forEach(b => b.onclick = () => { st.day = +b.dataset.i; save(); draw(); });
 
-    let currentEx = 0;
-    let currentSet = 0;
-    let timer = null;
-    let restLeft = 0;
+      const s = p.sess[st.day];
+      document.getElementById('sessTitle').textContent = s.t;
+      document.getElementById('sessDesc').textContent = s.d;
 
-    function renderToday() {
-      const p = programs[state.program];
-      document.getElementById('nowTitle').textContent = p.title;
-      document.getElementById('nowDesc').textContent = p.desc;
-      document.getElementById('readinessStatus').textContent = `Readiness: ${state.readiness.toUpperCase()}`;
-      document.getElementById('readinessStatus').className = `status ${state.readiness}`;
+      document.getElementById('sessionPreview').classList.remove('hidden');
+      document.getElementById('activeSession').classList.add('hidden');
 
-      const timeline = document.getElementById('dayTimeline');
-      timeline.innerHTML = p.exercises.map(ex =>
-        `<div class="day-item"><strong>${ex.name}</strong><br><span class="muted">${ex.detail}</span></div>`
-      ).join('');
-
-      document.getElementById('nowCard').classList.remove('hidden');
-      document.getElementById('sessionCard').classList.add('hidden');
+      document.getElementById('stats').innerHTML = `Fade: ${st.fade??'—'}<br>Maxes: ${Object.keys(st.maxes).length?Object.entries(st.maxes).map(([k,v])=>k+': '+v).join(', '):'none'}`;
+      document.getElementById('hist').innerHTML = st.logs.slice(0,8).map(l=>`<div style="padding:10px 0;border-bottom:1px solid #e0f2fe">${l.date} · ${l.title}</div>`).join('') || 'No sessions logged';
     }
 
-    document.getElementById('startSessionBtn').onclick = () => {
-      currentEx = 0;
-      currentSet = 0;
-      document.getElementById('nowCard').classList.add('hidden');
-      document.getElementById('sessionCard').classList.remove('hidden');
-      showExercise();
+    document.getElementById('startBtn').onclick = () => {
+      document.getElementById('sessionPreview').classList.add('hidden');
+      document.getElementById('activeSession').classList.remove('hidden');
+      const s = PROGS[st.program].sess[st.day];
+      document.getElementById('exTitle').textContent = s.t;
+      document.getElementById('exDesc').textContent = s.d;
+      document.getElementById('timerDisp').textContent = 'Ready';
+      document.getElementById('setList').innerHTML = '<div class="set-row"><span>Work sets</span><span>Complete when finished</span></div>';
     };
 
-    function showExercise() {
-      const p = programs[state.program];
-      if (currentEx >= p.exercises.length) { endSession(); return; }
-      const ex = p.exercises[currentEx];
-      document.getElementById('exerciseName').textContent = ex.name;
-      document.getElementById('exerciseDetail').textContent = ex.detail;
-      document.getElementById('timerDisplay').textContent = 'Ready';
-      const list = document.getElementById('setsList');
-      list.innerHTML = '';
-      for (let i = 0; i < ex.sets; i++) {
-        list.innerHTML += `<div class="set-row"><span>Set ${i+1}</span><span>${i < currentSet ? '✓ Done' : ''}</span></div>`;
-      }
-    }
-
-    document.getElementById('completeSetBtn').onclick = () => {
-      const p = programs[state.program];
-      const ex = p.exercises[currentEx];
-      currentSet++;
-      if (currentSet >= ex.sets) {
-        currentEx++;
-        currentSet = 0;
-      }
-      startRest(ex.rest);
-      showExercise();
+    document.getElementById('completeBtn').onclick = () => {
+      document.getElementById('timerDisp').textContent = 'Rest…';
+      setTimeout(()=> document.getElementById('timerDisp').textContent = 'GO', 2500);
     };
 
-    function startRest(sec) {
-      clearInterval(timer);
-      restLeft = sec;
-      const display = document.getElementById('timerDisplay');
-      timer = setInterval(() => {
-        restLeft--;
-        const m = Math.floor(restLeft / 60);
-        const s = restLeft % 60;
-        display.textContent = `${m}:${s.toString().padStart(2,'0')}`;
-        if (restLeft <= 0) {
-          clearInterval(timer);
-          display.textContent = 'GO';
-        }
-      }, 1000);
-    }
-
-    document.getElementById('finishEarlyBtn').onclick = endSession;
-
-    function endSession() {
-      clearInterval(timer);
-      state.logs.unshift({
-        date: new Date().toISOString().slice(0,10),
-        program: state.program,
-        title: programs[state.program].title
-      });
-      if (state.logs.length > 30) state.logs.length = 30;
+    document.getElementById('finishBtn').onclick = () => {
+      const s = PROGS[st.program].sess[st.day];
+      st.logs.unshift({date: new Date().toISOString().slice(0,10), title: s.t});
+      if (st.logs.length>50) st.logs.length=50;
       save();
-      alert('Session logged.');
-      renderToday();
-      renderProgress();
-    }
-
-    // Navigation
-    document.querySelectorAll('.nav button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-        document.getElementById(btn.dataset.view).classList.remove('hidden');
-        if (btn.dataset.view === 'progressView') renderProgress();
-      };
-    });
-
-    function renderProgress() {
-      document.getElementById('readinessLabel').textContent = `${state.readiness.toUpperCase()} — ${state.readiness === 'green' ? 'full plan' : 'adjusted'}`;
-      document.getElementById('maxesList').textContent = Object.keys(state.maxes).length
-        ? Object.entries(state.maxes).map(([k,v]) => `${k}: ${v}kg`).join(' · ')
-        : 'None logged yet';
-      document.getElementById('fadeScore').textContent = state.fade ?? '—';
-      document.getElementById('fadeBar').style.width = (state.fade || 0) + '%';
-      document.getElementById('recentLogs').innerHTML = state.logs.slice(0,8).map(l =>
-        `<div class="day-item">${l.date} · ${l.title}</div>`
-      ).join('') || 'No sessions yet.';
-    }
-
-    document.getElementById('cycleReadinessBtn').onclick = () => {
-      const order = ['green','yellow','red'];
-      state.readiness = order[(order.indexOf(state.readiness) + 1) % 3];
-      save();
-      renderToday();
-      renderProgress();
+      alert('Session logged');
+      draw();
     };
 
-    document.getElementById('saveProgramBtn').onclick = () => {
-      state.program = document.getElementById('programSelect').value;
-      save();
-      renderToday();
-      alert('Program updated.');
+    document.getElementById('advWeek').onclick = () => { st.week++; save(); draw(); };
+    document.getElementById('applyProg').onclick = () => {
+      st.program = document.getElementById('progSel').value;
+      st.week = 1; st.day = 0; save(); draw(); alert('Program changed');
     };
-
-    document.getElementById('importBtn').onclick = () => {
-      const file = document.getElementById('importFile').files[0];
-      if (!file) { document.getElementById('importStatus').textContent = 'Choose a file first.'; return; }
-      const reader = new FileReader();
-      reader.onload = e => {
+    document.getElementById('doImport').onclick = () => {
+      const f = document.getElementById('impFile').files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = e => {
         try {
-          const data = JSON.parse(e.target.result);
-          if (data.maxes) state.maxes = data.maxes;
-          if (data.logs) state.logs = data.logs;
-          if (data.fade) state.fade = data.fade;
-          save();
-          document.getElementById('importStatus').textContent = 'Import successful.';
-          renderProgress();
-        } catch {
-          document.getElementById('importStatus').textContent = 'Invalid backup file.';
-        }
+          const d = JSON.parse(e.target.result);
+          if (d.logs) st.logs = d.logs;
+          if (d.maxes) st.maxes = d.maxes;
+          if (d.fade) st.fade = d.fade;
+          save(); document.getElementById('impMsg').textContent = 'Imported successfully';
+          draw();
+        } catch { document.getElementById('impMsg').textContent = 'Could not read file'; }
       };
-      reader.readAsText(file);
+      r.readAsText(f);
     };
 
-    // Init
-    document.getElementById('programSelect').value = state.program;
-    renderToday();
+    document.querySelectorAll('.nav button').forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));
+        document.getElementById(b.dataset.view).classList.remove('hidden');
+      };
+    });
+
+    document.getElementById('progSel').value = st.program;
+    draw();
   </script>
 </body>
 </html>
