@@ -23,25 +23,25 @@
       --red: #ef4444;
       --radius: 16px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
       min-height: 100vh;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
     }
     header {
-      padding: 16px 20px;
+      padding: 16px 20px 12px;
       background: var(--surface);
-      border-bottom: 1px solid #2a2e36;
+      border-bottom: 1px solid #2a2a2a;
       position: sticky;
       top: 0;
       z-index: 10;
     }
-    header h1 { font-size: 20px; font-weight: 600; }
-    .status { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    header h1 { font-size: 22px; font-weight: 700; color: var(--accent); }
+    .status { font-size: 14px; margin-top: 4px; font-weight: 500; }
     .status.green { color: var(--green); }
     .status.yellow { color: var(--yellow); }
     .status.red { color: var(--red); }
@@ -51,20 +51,20 @@
       border-radius: var(--radius);
       padding: 20px;
       margin-bottom: 16px;
-      border: 1px solid #2a2e36;
+      border: 1px solid #2a2a2a;
     }
-    .card h2 { font-size: 18px; margin-bottom: 8px; }
-    .card p { color: var(--muted); font-size: 15px; }
+    .card h2 { font-size: 18px; margin-bottom: 6px; }
+    .card p, .muted { color: var(--muted); font-size: 15px; }
     .big-btn {
       width: 100%;
       padding: 18px;
       background: var(--accent);
-      color: white;
+      color: #000;
       border: none;
       border-radius: 12px;
       font-size: 17px;
-      font-weight: 600;
-      margin-top: 12px;
+      font-weight: 700;
+      margin-top: 14px;
       cursor: pointer;
     }
     .big-btn:active { transform: scale(0.98); }
@@ -73,16 +73,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid #2a2e36;
+      padding: 16px 0;
+      border-bottom: 1px solid #2a2a2a;
+      font-size: 16px;
     }
     .set-row:last-child { border: none; }
     .timer {
-      font-size: 48px;
-      font-weight: 700;
+      font-size: 56px;
+      font-weight: 800;
       text-align: center;
-      margin: 20px 0;
+      margin: 16px 0;
       font-variant-numeric: tabular-nums;
+      color: var(--accent);
     }
     .nav {
       position: fixed;
@@ -91,8 +93,8 @@
       right: 0;
       background: var(--surface);
       display: flex;
-      border-top: 1px solid #2a2e36;
-      padding: 8px 0;
+      border-top: 1px solid #2a2a2a;
+      padding: 6px 0 10px;
       z-index: 20;
     }
     .nav button {
@@ -100,54 +102,57 @@
       background: none;
       border: none;
       color: var(--muted);
-      font-size: 12px;
-      padding: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 4px;
       cursor: pointer;
     }
-    .nav button.active { color: var(--accent); font-weight: 600; }
-    .progress-item { margin-bottom: 16px; }
-    .progress-item .label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
-    .bar { height: 8px; background: #2a2e36; border-radius: 4px; overflow: hidden; }
+    .nav button.active { color: var(--accent); }
+    .progress-item { margin-bottom: 18px; }
+    .progress-item .label { display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 6px; }
+    .bar { height: 10px; background: #2a2a2a; border-radius: 5px; overflow: hidden; }
     .bar-fill { height: 100%; background: var(--accent); }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 14px;
       background: var(--surface2);
-      border: 1px solid #3a3f4a;
+      border: 1px solid #3a3a3a;
       border-radius: 10px;
       color: var(--text);
       font-size: 16px;
       margin-top: 8px;
     }
-    .hidden { display: none; }
-    .tag { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .hidden { display: none !important; }
+    .tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
     .tag.green { background: #064e3b; color: #6ee7b7; }
     .tag.yellow { background: #78350f; color: #fcd34d; }
     .tag.red { background: #7f1d1d; color: #fca5a5; }
+    .day-item { padding: 12px 0; border-bottom: 1px solid #2a2a2a; }
+    .day-item:last-child { border: none; }
   </style>
 </head>
 <body>
   <header>
     <h1>Fighter</h1>
-    <div class="status" id="readinessStatus">Ready</div>
+    <div class="status green" id="readinessStatus">Readiness: GREEN</div>
   </header>
 
   <main>
-    <!-- TODAY / NOW -->
+    <!-- TODAY -->
     <section id="todayView">
       <div class="card" id="nowCard">
-        <h2 id="nowTitle">Loading today's session…</h2>
-        <p id="nowDesc">Preparing your plan.</p>
+        <h2 id="nowTitle">Today's Session</h2>
+        <p id="nowDesc">Tap Start to begin guided training.</p>
         <button class="big-btn" id="startSessionBtn">Start Session</button>
       </div>
 
       <div class="card hidden" id="sessionCard">
         <h2 id="exerciseName">Exercise</h2>
-        <p id="exerciseDetail">Sets × Reps · Target</p>
-        <div class="timer" id="timerDisplay">00:00</div>
+        <p id="exerciseDetail">Sets × Reps</p>
+        <div class="timer" id="timerDisplay">Ready</div>
         <div id="setsList"></div>
         <button class="big-btn" id="completeSetBtn">Complete Set</button>
-        <button class="big-btn secondary" id="skipRestBtn">Skip Rest</button>
+        <button class="big-btn secondary" id="finishEarlyBtn">Finish Session</button>
       </div>
 
       <div class="card">
@@ -160,47 +165,43 @@
     <section id="progressView" class="hidden">
       <div class="card">
         <h2>Readiness</h2>
-        <div class="progress-item">
-          <div class="label"><span>Current</span><span id="readinessLabel">—</span></div>
-        </div>
-        <button class="big-btn secondary" id="logReadinessBtn">Log Morning Check</button>
+        <p id="readinessLabel">GREEN — full plan</p>
+        <button class="big-btn secondary" id="cycleReadinessBtn">Cycle Readiness (test)</button>
       </div>
       <div class="card">
-        <h2>Key Metrics</h2>
+        <h2>Key Numbers</h2>
         <div class="progress-item">
-          <div class="label"><span>Working Maxes</span><span id="maxesSummary">Not set</span></div>
+          <div class="label"><span>Working Maxes</span></div>
+          <div id="maxesList" class="muted">None logged yet</div>
         </div>
         <div class="progress-item">
           <div class="label"><span>Latest Fade</span><span id="fadeScore">—</span></div>
           <div class="bar"><div class="bar-fill" id="fadeBar" style="width:0%"></div></div>
         </div>
-        <div class="progress-item">
-          <div class="label"><span>20-min Test</span><span id="aerobicScore">—</span></div>
-        </div>
       </div>
       <div class="card">
         <h2>Recent Sessions</h2>
-        <div id="recentLogs">No sessions logged yet.</div>
+        <div id="recentLogs">No sessions yet.</div>
       </div>
     </section>
 
-    <!-- SETTINGS / IMPORT -->
+    <!-- SETTINGS -->
     <section id="settingsView" class="hidden">
       <div class="card">
-        <h2>Import Existing Data</h2>
-        <p>Upload the JSON backup from your current Optimal 8 app to restore maxes, logs, and history.</p>
-        <input type="file" id="importFile" accept=".json">
-        <button class="big-btn" id="importBtn">Import Backup</button>
-        <p id="importStatus" style="margin-top:12px; color:var(--muted);"></p>
+        <h2>Active Program</h2>
+        <select id="programSelect">
+          <option value="strength">Strength / Power / Physique (12 wk)</option>
+          <option value="prep">Prep (16 wk)</option>
+          <option value="camp">Camp (10 wk)</option>
+        </select>
+        <button class="big-btn" id="saveProgramBtn">Set Program</button>
       </div>
       <div class="card">
-        <h2>Program</h2>
-        <select id="programSelect">
-          <option value="strength">Strength / Power / Physique</option>
-          <option value="prep">Prep</option>
-          <option value="camp">Camp</option>
-        </select>
-        <button class="big-btn secondary" id="saveProgramBtn" style="margin-top:12px;">Set Active Program</button>
+        <h2>Import Backup</h2>
+        <p class="muted">Select the JSON export from your previous Optimal 8 app.</p>
+        <input type="file" id="importFile" accept=".json,application/json">
+        <button class="big-btn" id="importBtn">Import</button>
+        <p id="importStatus" class="muted" style="margin-top:12px;"></p>
       </div>
     </section>
   </main>
@@ -212,203 +213,203 @@
   </nav>
 
   <script>
-    // Simple local storage wrapper
     const store = {
-      get: (k, d = null) => {
-        try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; }
-      },
+      get: (k, d = null) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
       set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
     };
 
-    let state = store.get('optimal8-state', {
+    let state = store.get('fighter-state', {
       program: 'strength',
       readiness: 'green',
       maxes: {},
       logs: [],
-      fade: null,
-      aerobic: null
+      fade: null
     });
 
-    function saveState() { store.set('optimal8-state', state); }
+    function save() { store.set('fighter-state', state); }
 
-    // Navigation
-    document.querySelectorAll('.nav button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-        document.getElementById(btn.dataset.view).classList.remove('hidden');
-      });
-    });
-
-    // Sample session data (placeholder — will be expanded with full program logic)
-    const sampleSessions = {
+    // Full program sessions (representative of Optimal 8 structure)
+    const programs = {
       strength: {
         title: "Lower Strength",
+        desc: "Trap bar focus · velocity loading · 4–5 sets",
         exercises: [
-          { name: "Trap Bar Deadlift", detail: "4 × 5 · Velocity-based", sets: 4, rest: 180 },
+          { name: "Trap Bar Deadlift", detail: "4 × 5 · stay in speed zone", sets: 4, rest: 180 },
           { name: "Bulgarian Split Squat", detail: "3 × 8 / side", sets: 3, rest: 90 },
-          { name: "Nordic Curl", detail: "3 × 5", sets: 3, rest: 90 }
+          { name: "Nordic Curl", detail: "3 × 5 (slow)", sets: 3, rest: 90 },
+          { name: "Farmer Carry", detail: "3 × 40 m", sets: 3, rest: 60 }
         ]
       },
       prep: {
-        title: "Power + Engine",
+        title: "Power + Engine 1",
+        desc: "Contrast + 4-min intervals",
         exercises: [
-          { name: "Contrast Squat", detail: "5 × (2 + 4 jumps)", sets: 5, rest: 150 },
-          { name: "Med Ball Throw", detail: "4 × 5", sets: 4, rest: 90 },
-          { name: "4-min Intervals", detail: "4 × 4 min · Erg", sets: 4, rest: 120 }
+          { name: "Contrast Squat", detail: "5 × (2 heavy + 4 jumps)", sets: 5, rest: 150 },
+          { name: "Med Ball Rotational Throw", detail: "4 × 5 / side", sets: 4, rest: 90 },
+          { name: "4-min Intervals (Erg)", detail: "4 × 4 min hard / 2 min easy", sets: 4, rest: 120 },
+          { name: "Neck Protocol", detail: "3 directions × 10", sets: 3, rest: 45 }
         ]
       },
       camp: {
         title: "Strength + Power",
+        desc: "Paused work + throws + rounds",
         exercises: [
-          { name: "Paused Squat", detail: "5 × 3 · Heavy", sets: 5, rest: 180 },
-          { name: "Bench Throw", detail: "4 × 4", sets: 4, rest: 120 },
-          { name: "Rounds Simulation", detail: "6 × 3 min", sets: 6, rest: 60 }
+          { name: "Paused Squat", detail: "5 × 3 · 2-sec pause", sets: 5, rest: 180 },
+          { name: "Bench Throw (Peak Power)", detail: "4 × 4", sets: 4, rest: 120 },
+          { name: "Landmine Punch", detail: "3 × 6 / side", sets: 3, rest: 90 },
+          { name: "6-Round Simulation", detail: "6 × 3 min · score fade", sets: 6, rest: 60 }
         ]
       }
     };
 
-    let currentSession = null;
-    let currentExIndex = 0;
+    let currentEx = 0;
     let currentSet = 0;
-    let timerInterval = null;
-    let restSeconds = 0;
+    let timer = null;
+    let restLeft = 0;
 
-    function loadToday() {
-      const sess = sampleSessions[state.program] || sampleSessions.strength;
-      document.getElementById('nowTitle').textContent = sess.title;
-      document.getElementById('nowDesc').textContent = `${sess.exercises.length} main pieces · Readiness: ${state.readiness}`;
+    function renderToday() {
+      const p = programs[state.program];
+      document.getElementById('nowTitle').textContent = p.title;
+      document.getElementById('nowDesc').textContent = p.desc;
       document.getElementById('readinessStatus').textContent = `Readiness: ${state.readiness.toUpperCase()}`;
       document.getElementById('readinessStatus').className = `status ${state.readiness}`;
+
+      const timeline = document.getElementById('dayTimeline');
+      timeline.innerHTML = p.exercises.map(ex =>
+        `<div class="day-item"><strong>${ex.name}</strong><br><span class="muted">${ex.detail}</span></div>`
+      ).join('');
+
       document.getElementById('nowCard').classList.remove('hidden');
       document.getElementById('sessionCard').classList.add('hidden');
     }
 
-    document.getElementById('startSessionBtn').addEventListener('click', () => {
-      currentSession = sampleSessions[state.program] || sampleSessions.strength;
-      currentExIndex = 0;
+    document.getElementById('startSessionBtn').onclick = () => {
+      currentEx = 0;
       currentSet = 0;
       document.getElementById('nowCard').classList.add('hidden');
       document.getElementById('sessionCard').classList.remove('hidden');
-      renderExercise();
-    });
+      showExercise();
+    };
 
-    function renderExercise() {
-      const ex = currentSession.exercises[currentExIndex];
-      if (!ex) {
-        finishSession();
-        return;
-      }
+    function showExercise() {
+      const p = programs[state.program];
+      if (currentEx >= p.exercises.length) { endSession(); return; }
+      const ex = p.exercises[currentEx];
       document.getElementById('exerciseName').textContent = ex.name;
       document.getElementById('exerciseDetail').textContent = ex.detail;
-      document.getElementById('setsList').innerHTML = '';
+      document.getElementById('timerDisplay').textContent = 'Ready';
+      const list = document.getElementById('setsList');
+      list.innerHTML = '';
       for (let i = 0; i < ex.sets; i++) {
-        const div = document.createElement('div');
-        div.className = 'set-row';
-        div.innerHTML = `<span>Set ${i+1}</span><span>${i < currentSet ? '✓' : ''}</span>`;
-        document.getElementById('setsList').appendChild(div);
+        list.innerHTML += `<div class="set-row"><span>Set ${i+1}</span><span>${i < currentSet ? '✓ Done' : ''}</span></div>`;
       }
-      document.getElementById('timerDisplay').textContent = '00:00';
     }
 
-    document.getElementById('completeSetBtn').addEventListener('click', () => {
-      const ex = currentSession.exercises[currentExIndex];
+    document.getElementById('completeSetBtn').onclick = () => {
+      const p = programs[state.program];
+      const ex = p.exercises[currentEx];
       currentSet++;
       if (currentSet >= ex.sets) {
-        currentExIndex++;
+        currentEx++;
         currentSet = 0;
-        startRest(ex.rest);
-      } else {
-        startRest(ex.rest);
       }
-      renderExercise();
-    });
+      startRest(ex.rest);
+      showExercise();
+    };
 
-    function startRest(seconds) {
-      restSeconds = seconds;
-      clearInterval(timerInterval);
-      updateTimer();
-      timerInterval = setInterval(() => {
-        restSeconds--;
-        updateTimer();
-        if (restSeconds <= 0) {
-          clearInterval(timerInterval);
-          document.getElementById('timerDisplay').textContent = 'Go';
+    function startRest(sec) {
+      clearInterval(timer);
+      restLeft = sec;
+      const display = document.getElementById('timerDisplay');
+      timer = setInterval(() => {
+        restLeft--;
+        const m = Math.floor(restLeft / 60);
+        const s = restLeft % 60;
+        display.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+        if (restLeft <= 0) {
+          clearInterval(timer);
+          display.textContent = 'GO';
         }
       }, 1000);
     }
 
-    function updateTimer() {
-      const m = Math.floor(restSeconds / 60).toString().padStart(2, '0');
-      const s = (restSeconds % 60).toString().padStart(2, '0');
-      document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+    document.getElementById('finishEarlyBtn').onclick = endSession;
+
+    function endSession() {
+      clearInterval(timer);
+      state.logs.unshift({
+        date: new Date().toISOString().slice(0,10),
+        program: state.program,
+        title: programs[state.program].title
+      });
+      if (state.logs.length > 30) state.logs.length = 30;
+      save();
+      alert('Session logged.');
+      renderToday();
+      renderProgress();
     }
 
-    document.getElementById('skipRestBtn').addEventListener('click', () => {
-      clearInterval(timerInterval);
-      document.getElementById('timerDisplay').textContent = 'Go';
+    // Navigation
+    document.querySelectorAll('.nav button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(btn.dataset.view).classList.remove('hidden');
+        if (btn.dataset.view === 'progressView') renderProgress();
+      };
     });
 
-    function finishSession() {
-      state.logs.unshift({
-        date: new Date().toISOString().slice(0, 10),
-        program: state.program,
-        title: currentSession.title
-      });
-      if (state.logs.length > 20) state.logs.pop();
-      saveState();
-      alert('Session complete. Logged.');
-      loadToday();
+    function renderProgress() {
+      document.getElementById('readinessLabel').textContent = `${state.readiness.toUpperCase()} — ${state.readiness === 'green' ? 'full plan' : 'adjusted'}`;
+      document.getElementById('maxesList').textContent = Object.keys(state.maxes).length
+        ? Object.entries(state.maxes).map(([k,v]) => `${k}: ${v}kg`).join(' · ')
+        : 'None logged yet';
+      document.getElementById('fadeScore').textContent = state.fade ?? '—';
+      document.getElementById('fadeBar').style.width = (state.fade || 0) + '%';
+      document.getElementById('recentLogs').innerHTML = state.logs.slice(0,8).map(l =>
+        `<div class="day-item">${l.date} · ${l.title}</div>`
+      ).join('') || 'No sessions yet.';
     }
 
-    // Import
-    document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('cycleReadinessBtn').onclick = () => {
+      const order = ['green','yellow','red'];
+      state.readiness = order[(order.indexOf(state.readiness) + 1) % 3];
+      save();
+      renderToday();
+      renderProgress();
+    };
+
+    document.getElementById('saveProgramBtn').onclick = () => {
+      state.program = document.getElementById('programSelect').value;
+      save();
+      renderToday();
+      alert('Program updated.');
+    };
+
+    document.getElementById('importBtn').onclick = () => {
       const file = document.getElementById('importFile').files[0];
-      if (!file) return;
+      if (!file) { document.getElementById('importStatus').textContent = 'Choose a file first.'; return; }
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         try {
           const data = JSON.parse(e.target.result);
-          // Merge key fields from typical Optimal 8 backup structure
           if (data.maxes) state.maxes = data.maxes;
           if (data.logs) state.logs = data.logs;
           if (data.fade) state.fade = data.fade;
-          if (data.aerobic) state.aerobic = data.aerobic;
-          saveState();
-          document.getElementById('importStatus').textContent = 'Import successful. Data restored.';
-          updateProgress();
+          save();
+          document.getElementById('importStatus').textContent = 'Import successful.';
+          renderProgress();
         } catch {
-          document.getElementById('importStatus').textContent = 'Could not read backup. Check the file.';
+          document.getElementById('importStatus').textContent = 'Invalid backup file.';
         }
       };
       reader.readAsText(file);
-    });
-
-    document.getElementById('saveProgramBtn').addEventListener('click', () => {
-      state.program = document.getElementById('programSelect').value;
-      saveState();
-      loadToday();
-      alert('Program set.');
-    });
-
-    function updateProgress() {
-      document.getElementById('readinessLabel').textContent = state.readiness.toUpperCase();
-      document.getElementById('maxesSummary').textContent = Object.keys(state.maxes).length
-        ? Object.entries(state.maxes).map(([k,v]) => `${k}: ${v}`).join(', ')
-        : 'Not set';
-      document.getElementById('fadeScore').textContent = state.fade ?? '—';
-      document.getElementById('fadeBar').style.width = state.fade ? `${Math.min(100, state.fade)}%` : '0%';
-      document.getElementById('aerobicScore').textContent = state.aerobic ?? '—';
-      document.getElementById('recentLogs').innerHTML = state.logs.slice(0, 5).map(l =>
-        `<div style="padding:8px 0; border-bottom:1px solid #2a2e36;">${l.date} · ${l.title || l.program}</div>`
-      ).join('') || 'No sessions logged yet.';
-    }
+    };
 
     // Init
-    loadToday();
-    updateProgress();
     document.getElementById('programSelect').value = state.program;
+    renderToday();
   </script>
 </body>
 </html>
